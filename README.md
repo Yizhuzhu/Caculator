@@ -20,6 +20,6 @@ To add % function
 To add +/- function     
 To delete specific expression in history panel     
 More math functions     
-Better design
+Better design         
 Keyboard input
        
