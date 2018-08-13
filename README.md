@@ -1,4 +1,4 @@
-# Caculator
+# Calculator
 A basic calculator       
 http://39.104.21.89/calculator/
 
@@ -21,4 +21,5 @@ To add +/- function
 To delete specific expression in history panel     
 More math functions     
 Better design
+Keyboard input
        
