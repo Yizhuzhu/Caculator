@@ -3,7 +3,7 @@ A basic calculator
 http://39.104.21.89/calculator/
 
 ## Functional Buttons
-+  -  *  /  AC  <-  =  . 
+add minus multiple divide  AC  <-  =  . 
 0 to 9
 
 ## Special Functions
