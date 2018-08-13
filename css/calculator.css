@@ -1,0 +1,340 @@
+@charset "UTF-8";
+
+html{
+    height: 100%;
+    font-size: 62.5%;
+}
+.maxhtml {
+	font-size: 82.5%;
+}
+body{
+	height: 100%;
+    min-width: 300px;
+    position: relative;
+    padding: 0;
+    margin: 0;
+    font-size: 62.5%;
+}
+ul {padding: 0;margin: 0;}
+
+.flexbox {
+    width: 100%;
+    height: 100%;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+.maxCalculator {
+	width: 65%;
+	height: 100%;
+}
+
+.miniCalc{
+	width: 210px;
+	height: 210px;
+	font-size: 40%;
+}
+
+
+#canvas {
+    overflow: hidden;
+    padding: 5px 5px;
+}
+
+.calc {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    -webkit-transition: all .6s;
+    transition: all .6s;
+    overflow: hidden;
+    z-index: 0;
+    position: relative;
+    box-shadow: 4px 4px 4px #88888888;
+    border-radius: 5px;
+    width: 310px;
+    max-width: 550px;
+    margin: 0px auto;
+    height: 100%;
+}
+
+#topbar {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    position: relative;
+    width: 100%;
+    height: 30%;
+}
+
+#toptool {
+    box-sizing: border-box;
+    background-color: black;
+    padding: 6px 6px 0 6px;
+    text-align: right;
+    width: 100%;
+    min-height: 32px;
+    position: relative;
+    
+}
+#toptool span {
+    width: 1.3rem;
+    height: 1.3rem;
+    line-height: 1.3rem;    
+    border-radius: 50%;
+    margin-right: 4px;
+    text-align: center;
+    display: inline-block;
+    cursor: default;
+    position: absolute;
+    top: 10px;
+    color: black;
+}
+
+#close {
+    background-color: red;
+    left: 8px;
+}
+#max {
+    background-color: orange;
+    left: 34px;
+}
+
+#resize {
+   font-size: 3rem;
+   left: 55px;
+   display: none !important;
+}
+
+.historybutton
+{
+    padding: 1px;
+	color: white;
+    margin: -25px;
+    background-color: orange;
+    border-radius: 50%;
+    top: 15px;
+}
+
+#result {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background-color: black;
+    color: white;
+    overflow: auto;
+    box-sizing: border-box;
+    text-align: right;
+    min-height: 90px;
+    width: 100%;
+    height: 100%;
+}
+#result > #express {
+    font-size: 1.5rem;
+}
+#result div {
+	padding: 0 3px;
+	box-sizing: border-box;
+}
+#result > #res {
+    width: 100%;
+    font-size: 4.5rem;
+    font-weight: 700; 
+}
+
+#toptool a {
+    background: black;
+    display: inline-block;
+    width: 3.5rem;
+    border-radius: 10px;
+    text-align: center;
+    color: inherit;
+    text-decoration: none;
+    font-family:cursive;
+    margin-left: .5rem;    
+}
+#toptool a:hover,
+#toptool a:active {
+	color: black;
+}
+
+#bottom {
+    font-weight: 600;
+    width: 100%;
+    height: 70%;
+}
+
+#bottom .row span.zero {
+    box-sizing: border-box;
+    width: 50.3%;
+    height: 100%;
+    padding-left: 11%;
+    display: flex;
+    justify-content: flex-start;
+}
+
+#bottom .row {
+    height: 20%;
+    width: 100%;
+    display: flex;
+    box-sizing: border-box;
+    margin-bottom: -1px;   
+}
+.mb{margin-bottom: 0 !important;}
+#bottom .row span:first-child {
+    border-left: 0;
+}
+#bottom .row:last-child span {
+    border-bottom: 0;
+}
+#bottom .row span{
+    -webkit-user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 25%;
+    background-color: #CBCAD0;
+    color:black;
+   	font-size: 2rem;
+   	line-height: 4.8rem;
+    border: 1px solid #fff;
+    border-right: 0;
+    cursor: default;
+}
+
+
+#bottom .row span.tool {
+    background-color: #F98B00;
+    color: #fff;
+    border:black;
+}
+#bottom .row span.multiple,
+#bottom .row span.devided,
+#bottom .row span.add,
+#bottom .row span.eq {
+    font-size: 2.6rem;
+}
+#bottom .row span.minus {
+    font-size: 1.9rem;
+}
+
+
+#toptool span:active,
+#bottom .row span:active,
+#bottom .row span.tool:active{
+    background-color: orange;
+    color: black;
+}
+
+/*History box*/
+#historyPanel {
+    -webkit-transition: all .2s;
+    transition: all .2s;
+    -webkit-transform: translateY(102%);
+    transform: translateY(102%);
+    font-family:cursive;
+    width: 100%;
+    height: 71%;
+    background: gray;
+    position: absolute;
+    z-index: 10;
+    left: 0;
+    bottom: 0;
+}
+
+#historyPanel .remove {
+	height: 30px;
+    background: black;
+    text-align: right;
+    box-sizing: border-box;
+    border-top: 1px solid transparent;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    color: white
+}
+#historyPanel .remove a{
+	color: white;
+    text-decoration: none;
+    padding-right: 0px;
+    margin-right: 15px;
+    margin-top: 5px;
+    background: orange;
+    border-radius: 50%
+}
+
+#historyPanel .con {
+    height: 99%;
+    overflow-y: auto;
+}
+
+#historyPanel ul {
+    padding: 0 5px 0 5px;
+    color: white;
+    font-size: 1rem;
+}
+#historyPanel ul li {
+    height: 38px;
+    text-align: right;
+    line-height: 38px;
+    font-size: 1.6rem;
+    font-family:sans-serif;
+    background:orange;
+    color: #000;
+    overflow: auto;
+}
+#historyPanel ul li:hover {
+    background:white;
+}
+
+
+
+
+
+
+/*Small Screen*/
+@media (max-width: 510px){
+    html {
+    	font-size: 80%;
+    	font-family:Helvetica;
+    }
+    #canvas {
+        height: 100%;
+        padding: 0;
+    }
+    .calc {
+        width: 100%;
+        height: 100%;
+        max-width: none;
+        border-radius: 0;
+    }
+    #bottom .row {margin: 0;}
+    #bottom .row span {
+        box-sizing: border-box;
+        border-top: 0;
+        border-color: white
+    }
+    #bottom .row span.tool{
+    background-color: orange;
+    border-color: white;
+    }
+    #bottom .row span.multiple {
+    	font-size: 2.1rem;
+        border-color: white;
+    }
+    #bottom .row span.zero {
+        width: 50.1%;
+    }
+    
+    #close,#max {display: none !important;}
+    #resize {
+    	left: 8px;
+    	font-size: 3.5rem;
+    	line-height:1.1rem !important;
+    	box-shadow: none !important;
+    	display: inline-block !important;}
+    #toptool a {font-size: 1rem;line-height: 1.9rem;}
+    
+}
+
