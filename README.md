@@ -1,6 +1,9 @@
 # Calculator
-A basic calculator       
-http://39.104.21.89/calculator/
+A functional calculator       
+http://39.104.21.89/calculator/           
+A basic calculator               
+http://39.104.21.89/basiccalculator/               
+
 
 ## Functional Buttons
 add minus multiple divide  AC  <-  =  .     
