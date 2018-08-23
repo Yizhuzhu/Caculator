@@ -76,6 +76,9 @@ function clickFunction(){
     var isFromHistory = false;  //From histroy
     var key = null;        //current single key
     var preKey = "";            //The single key clicked
+    var presymbol = "";
+    var currentsymbol ="";
+    var oldres = '';
 
     //Keyboardpart
     for(var i=0; i <keyboardpart.length; i++){
@@ -115,17 +118,32 @@ function clickFunction(){
             //Click a symbol
             //Get the latest
             if(symbol[number]){
-                if(preKey !== "=" && symbol[preKey]){//The key clicked is = or the symbol clicked
+                presymbol = currentsymbol;
+                currentsymbol = symbol[number];
+                if(preKey !== "=" && symbol[preKey]){//The key clicked is not = or the symbol clicked 
                     express.innerHTML = exp.slice(0,-1) + number;
                 }else{
                     if(exp == ""){
+                        oldres = resultV;
                         express.innerHTML = resultV + number;
                     }else{
                         express.innerHTML += resultV + number;
                     }
                     if(symbol[lastDigit]){
-                        exp = express.innerHTML.replace(/×/g,"*").replace(/÷/,"/");
-                        res.innerHTML = newEval(exp.slice(0,-1));
+                        exp = express.innerHTML.replace(/×/g,"*").replace(/÷/g,"/");
+//                        res.innerHTML = newEval(exp.slice(0,-1));
+                
+                        if(presymbol == '-') {
+                            var num = Number(oldres) - Number(resultV);
+                        } else if(presymbol == '+') {
+                            var num = Number(oldres) + Number(resultV);
+                        } else if(presymbol == '*' || presymbol == '×') {
+                            var num = Number(oldres) * Number(resultV);
+                        } else if(presymbol == '/' || presymbol == '÷') {
+                            var num = Number(oldres)/Number(resultV);
+                        }
+                        oldres = num;
+                        res.innerHTML = num;
                     }
                 }                  
             }else{
@@ -154,12 +172,30 @@ function clickFunction(){
                 if(!isFromHistory){
                     var temp = "";
                     if(symbol[lastDigit] && resultV){
-                        temp = expVal.replace(/×/g,"*").replace(/÷/,"/");
-                        temp = newEval(temp.slice(0,-1)) + symbol[lastDigit] + resultV;
+                        //temp = expVal.replace(/×/g,"*").replace(/÷/,"/");
+                        //temp = newEval(temp.slice(0,-1)) + symbol[lastDigit] + resultV;
+                        presymbol = symbol[lastDigit];
+                        if(presymbol == '-') {
+                            var num = Number(oldres) - Number(resultV);
+                        } else if(presymbol == '+') {
+                            var num = Number(oldres) + Number(resultV);
+                        } else if(presymbol == '*' || presymbol == '×') {
+                            var num = Number(oldres) * Number(resultV);
+                        } else if(presymbol == '/' || presymbol == '÷') {
+                            var num = Number(oldres)/Number(resultV);
+                        }
                     }else{
-                        temp = expVal.replace(/×/g,"*").replace(/÷/,"/");
+                        if(presymbol == '-') {
+                            var num = Number(oldres) - Number(resultV);
+                        } else if(presymbol == '+') {
+                            var num = Number(oldres) + Number(resultV);
+                        } else if(presymbol == '*' || presymbol == '×') {
+                            var num = Number(oldres) * Number(resultV);
+                        } else if(presymbol == '/' || presymbol == '÷') {
+                            var num = Number(oldres)/Number(resultV);
+                        }
                     }
-                    val = newEval(temp);
+                    //val = newEval(temp);
                 }else{
                     val = resultV;
                 }
@@ -167,9 +203,9 @@ function clickFunction(){
                 val = "<span style='font-size:0.5em;color:red'>Error：Bad Result</span>";
             }finally{
                 express.innerHTML = "";
-                res.innerHTML = val;
+                res.innerHTML = num;
                 preKey = "=";
-                saveHistory(expVal+resultV+"="+val);
+                saveHistory(expVal+resultV+"="+num);
                 ResultTooLong(resultV.length);
                 isFromHistory = false;
             }
@@ -181,6 +217,7 @@ function clickFunction(){
    	var resetButton = document.getElementById("reset");    
     resetButton.onclick = function(){
         res.innerHTML = "0";
+        oldres = "";
         express.innerHTML = "";
     };
 
@@ -284,103 +321,106 @@ function clickFunction(){
     }
 
     
-    //Rewrite eval by myself
-    
-    function newEval(exp) {
-        var rpnArr = outputR(exp);
-        return getExpR(rpnArr)
-    }
-    
-    function isOperator(value) {
-    var operatorString = '+-*/()×÷';
-    return operatorString.indexOf(value) > -1; //The first occurrence of the sub string in the parent string
-    }
-    
-    function getPrioraty(value) {
-        if(value == '-' || value == '+') {
-            return 1;
-        } else if(value == '*' || value == '/' || value == '×' || value == '÷' ) {
-            return 2;
-        } else{
-            return 0;
-        }
-    }
+   
 
-    function prioraty(v1, v2) {
-        return getPrioraty(v1) <= getPrioraty(v2);
-    }
-
-    function outputR(exp) {
-        var inputStack = [];
-        var outputStack = [];
-        var outputQueue = [];
-        var firstIsOperator = false;
-        exp.replace(/\s/g,'');
-        if(isOperator(exp[0])){
-            exp = exp.substring(1);
-            firstIsOperator = true;
-        }
-        for(var i = 0, max = exp.length; i < max; i++) {
-            if(!isOperator(exp[i]) && !isOperator(exp[i-1]) && (i != 0)) {
-                inputStack[inputStack.length-1] = inputStack[inputStack.length-1] + exp[i] + '';
-            } else {
-                inputStack.push(exp[i]);
-            }
-        }
-        if(firstIsOperator) {
-            inputStack[0] = -inputStack[0] 
-        }
-        while(inputStack.length > 0) {
-            var cur = inputStack.shift();
-            if(isOperator(cur)) {
-                if (cur == '(') {
-                    outputStack.push(cur);
-                } else if (cur == ')') {
-                    var po = outputStack.pop();
-                    while(po != '(' && outputStack.length > 0) {
-                        outputQueue.push(po);
-                        po = outputStack.pop();
-                    }
-                } else {
-                    while(prioraty(cur,outputStack[outputStack.length - 1]) && outputStack.length > 0) {
-                        outputQueue.push(outputStack.pop());
-                    }
-                    outputStack.push(cur)
-                }
-            } else {
-                outputQueue.push(Number(cur));
-            }
-        }
-        if(outputStack.length > 0){
-            while (outputStack.length > 0) {
-                outputQueue.push(outputStack.pop());
-            }
-        }
-        return outputQueue;
-    }
-
-    function getExpR(rpnArr) {
-        var stack = [];
-        for(var i = 0, max = rpnArr.length; i < max; i++) {
-            if(!isOperator(rpnArr[i])) {
-                stack.push(rpnArr[i]);
-            } else {
-                var num1 = stack.pop();
-                var num2 = stack.pop();
-                if(rpnArr[i] == '-') {
-                    var num = num2 - num1;
-                } else if(rpnArr[i] == '+') {
-                    var num = num2 + num1;
-                } else if(rpnArr[i] == '*' || rpnArr[i] == '×') {
-                    var num = num2 * num1;
-                } else if(rpnArr[i] == '/' || rpnArr[i] == '÷') {
-                    var num = num2/num1;
-                }
-                stack.push(num);
-            }
-        }
-        return stack[0];
-    }
+    
+   
+    
+//    function newEval(exp) {
+//        var rpnArr = outputR(exp);
+//        return getExpR(rpnArr)
+//    }
+//    
+//    function isOperator(value) {
+//    var operatorString = '+-*/()×÷';
+//    return operatorString.indexOf(value) > -1; //The first occurrence of the sub string in the parent string
+//    }
+//    
+//    function getPrioraty(value) {
+//        if(value == '-' || value == '+') {
+//            return 1;
+//        } else if(value == '*' || value == '/' || value == '×' || value == '÷' ) {
+//            return 2;
+//        } else{
+//            return 0;
+//        }
+//    }
+//
+//    function prioraty(v1, v2) {
+//        return getPrioraty(v1) <= getPrioraty(v2);
+//    }
+//
+//    function outputR(exp) {
+//        var inputStack = [];
+//        var outputStack = [];
+//        var outputQueue = [];
+//        var firstIsOperator = false;
+//        exp.replace(/\s/g,'');
+//        if(isOperator(exp[0])){
+//            exp = exp.substring(1);
+//            firstIsOperator = true;
+//        }
+//        for(var i = 0, max = exp.length; i < max; i++) {
+//            if(!isOperator(exp[i]) && !isOperator(exp[i-1]) && (i != 0)) {
+//                inputStack[inputStack.length-1] = inputStack[inputStack.length-1] + exp[i] + '';
+//            } else {
+//                inputStack.push(exp[i]);
+//            }
+//        }
+//        if(firstIsOperator) {
+//            inputStack[0] = -inputStack[0] 
+//        }
+//        while(inputStack.length > 0) {
+//            var cur = inputStack.shift();
+//            if(isOperator(cur)) {
+//                if (cur == '(') {
+//                    outputStack.push(cur);
+//                } else if (cur == ')') {
+//                    var po = outputStack.pop();
+//                    while(po != '(' && outputStack.length > 0) {
+//                        outputQueue.push(po);
+//                        po = outputStack.pop();
+//                    }
+//                } else {
+//                    while(prioraty(cur,outputStack[outputStack.length - 1]) && outputStack.length > 0) {
+//                        outputQueue.push(outputStack.pop());
+//                    }
+//                    outputStack.push(cur)
+//                } 
+//            } else {
+//                outputQueue.push(Number(cur));
+//            }
+//        }
+//        if(outputStack.length > 0){
+//            while (outputStack.length > 0) {
+//                outputQueue.push(outputStack.pop());
+//            }
+//        }
+//        return outputQueue;
+//    }
+//
+//    function getExpR(rpnArr) {
+//        var stack = [];
+//        for(var i = 0, max = rpnArr.length; i < max; i++) {
+//            if(!isOperator(rpnArr[i])) {
+//                stack.push(rpnArr[i]);
+//            } else {
+//                var num1 = stack.pop();
+//                var num2 = stack.pop();
+//                if(rpnArr[i] == '-') {
+//                    var num = num2 - num1;
+//                } else if(rpnArr[i] == '+') {
+//                    var num = num2 + num1;
+//                } else if(rpnArr[i] == '*' || rpnArr[i] == '×') {
+//                    var num = num2 * num1;
+//                } else if(rpnArr[i] == '/' || rpnArr[i] == '÷') {
+//                    var num = num2/num1;
+//                }
+//                stack.push(num);
+//            }
+//        } 
+//        return stack[0];
+//    }
 
     
 }
